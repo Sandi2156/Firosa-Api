@@ -97,4 +97,6 @@ async function initRedisSubscribe() {
 
 initRedisSubscribe();
 
-app.listen(PORT, () => console.log(`Api server is listening on port ${PORT}`));
+app.listen(process.env.PORT || PORT, () =>
+  console.log(`Api server is listening on port ${PORT}`)
+);
