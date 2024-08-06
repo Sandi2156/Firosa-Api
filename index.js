@@ -81,6 +81,13 @@ app.post("/project", async (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  return res.json({
+    app: "vercel clone",
+    version: "1.0.0",
+  });
+});
+
 async function initRedisSubscribe() {
   subscriber.psubscribe("logs:*");
   subscriber.on("pmessage", (pattern, channel, message) => {
