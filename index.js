@@ -4,6 +4,7 @@ const { ECSClient, RunTaskCommand } = require("@aws-sdk/client-ecs");
 const cors = require("cors");
 const Redis = require("ioredis");
 const { Server } = require("socket.io");
+const http = require("http");
 
 const ecsClient = new ECSClient({
   credentials: {
@@ -17,19 +18,19 @@ const subscriber = new Redis(
   `rediss://default:${process.env.REDIS_PASSWORD}@caching-1529a761-sandipan-050b.g.aivencloud.com:24119`
 );
 
-const io = new Server({ cors: "*" });
+const app = express();
+const server = http.createServer(app);
+const PORT = 9000;
 
-io.listen(9001, () => "Socket server is running on 9001");
+const io = new Server(server, {
+  cors: "*",
+});
 
 io.on("connection", (socket) => {
   socket.on("subscribe", (channel) => {
     socket.join(channel);
-    socket.emit("message", `Joined ${channel}`);
   });
 });
-
-const app = express();
-const PORT = 9000;
 
 const config = {
   CLUSTER: "arn:aws:ecs:ap-south-1:008971673944:cluster/versel-cluster-clone",
@@ -97,6 +98,6 @@ async function initRedisSubscribe() {
 
 initRedisSubscribe();
 
-app.listen(process.env.PORT || PORT, () =>
+server.listen(process.env.PORT || PORT, () =>
   console.log(`Api server is listening on port ${PORT}`)
 );
