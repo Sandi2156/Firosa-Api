@@ -13,11 +13,18 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-ecs": "^3.620.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/uuid": "^10.0.0",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "ioredis": "^5.4.1",
+    "mongoose": "^8.5.3",
     "random-word-slugs": "^0.1.7",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
