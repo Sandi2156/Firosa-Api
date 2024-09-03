@@ -1,7 +1,8 @@
 import userRepository from "../repository/user";
 import sessionService from "./session";
 import bcrypt from "../lib/bcrypt";
-import { ValidationError } from "../lib/exceptions";
+import { AuthorizationError, ValidationError } from "../lib/exceptions";
+import errorCodes from "../constants/error_codes";
 
 async function signUp(
   email: string,
@@ -36,8 +37,15 @@ async function signOut(sessionId: string) {
   await sessionService.removeSession(sessionId);
 }
 
+async function validateSession(sessionId: string) {
+  const sessionEntry = await sessionService.findUserForASessionId(sessionId);
+
+  if (!sessionEntry || !sessionEntry.length) throw new AuthorizationError();
+}
+
 export default {
   signUp,
   signIn,
   signOut,
+  validateSession,
 };

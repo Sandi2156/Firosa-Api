@@ -8,6 +8,7 @@ const userRouter = express.Router();
 userRouter
   .post("/signup", tryCatch(userController.signUp))
   .post("/signin", tryCatch(userController.signIn))
-  .post("/signout", tryCatch(userController.signOut));
+  .post("/signout", tryCatch(userController.signOut))
+  .post("/validate-session", tryCatch(userController.validateSession));
 
 export default userRouter;

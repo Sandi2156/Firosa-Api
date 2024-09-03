@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 
 import userService from "../services/user";
-import { AppError, ValidationError } from "../lib/exceptions";
+import {
+  AppError,
+  ValidationError,
+  AuthorizationError,
+} from "../lib/exceptions";
 import errorCodes from "../constants/error_codes";
 import ApiResposne from "../lib/response";
 
@@ -43,11 +47,7 @@ async function signOut(req: Request, res: Response) {
   const sessionId = req.cookies?.sessionId;
 
   if (!sessionId)
-    throw new AppError(
-      errorCodes.BAD_REQUEST,
-      "You are not logged in anyway!",
-      400
-    );
+    throw new AppError(errorCodes.BAD_REQUEST, "You are not logged in!", 400);
 
   await userService.signOut(sessionId);
 
@@ -56,8 +56,21 @@ async function signOut(req: Request, res: Response) {
     .json(new ApiResposne(true, "You are signed out!").toDict());
 }
 
+async function validateSession(req: Request, res: Response) {
+  const sessionId = req.cookies?.sessionId;
+
+  if (!sessionId) throw new AuthorizationError();
+
+  await userService.validateSession(sessionId);
+
+  return res
+    .status(200)
+    .json(new ApiResposne(true, "Session ID is validated!").toDict());
+}
+
 export default {
   signUp,
   signIn,
   signOut,
+  validateSession,
 };
