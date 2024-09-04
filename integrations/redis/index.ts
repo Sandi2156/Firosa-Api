@@ -1,7 +1,6 @@
 const Redis = require("ioredis");
+import redisConfig from "../../config/redis";
 
-const subscriber = new Redis(
-  `rediss://default:${process.env.REDIS_PASSWORD}@caching-1529a761-sandipan-050b.g.aivencloud.com:24119`
-);
+const subscriber = new Redis(redisConfig.CONNECTION_STRING);
 
 export default subscriber;

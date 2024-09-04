@@ -15,7 +15,7 @@ const server = http.createServer(app);
 /* middlewares */
 app.use(
   cors({
-    origin: process.env.UI_ENDPOINT,
+    origin: config.UI_ENDPOINT,
     credentials: true,
   })
 );
@@ -34,7 +34,7 @@ const io = new Server(server, {
 /* run startup initializer */
 startupInitialize(io);
 
-const PORT = process.env.PORT || config.PORT;
+const PORT = config.PORT;
 server.listen(PORT, () =>
   console.log(`Api server is listening on port ${PORT}`)
 );
