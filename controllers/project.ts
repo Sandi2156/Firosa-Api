@@ -44,6 +44,7 @@ async function storeProject(req: Request, res: Response) {
   if (!projectId) throw new ValidationError("ProjectId is required!");
   if (!projectLink) throw new ValidationError("ProjectLink is required");
   if (!projectName) throw new ValidationError("Project Name is required");
+  if (!userId) throw new ValidationError("User ID is required");
 
   await projectService.storeProject(
     projectId,

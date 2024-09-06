@@ -2,7 +2,10 @@ import express from "express";
 
 import projectController from "../controllers/project";
 import tryCatch from "../lib/try_catch";
-import { jwtTokenRequiredWithUserId } from "../middlewares/authentication";
+import {
+  jwtTokenRequiredWithUserId,
+  jwtTokenRequiredWithOID,
+} from "../middlewares/authentication";
 
 const projectRouter = express.Router();
 
@@ -14,7 +17,7 @@ projectRouter
   )
   .post(
     "/store",
-    tryCatch(jwtTokenRequiredWithUserId),
+    tryCatch(jwtTokenRequiredWithOID),
     tryCatch(projectController.storeProject)
   )
   .get(

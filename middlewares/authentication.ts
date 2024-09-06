@@ -23,4 +23,24 @@ async function jwtTokenRequiredWithUserId(
   return next();
 }
 
-export { jwtTokenRequiredWithUserId };
+async function jwtTokenRequiredWithOID(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const token = req.cookies?.token;
+  if (!token) throw new AuthorizationError();
+
+  try {
+    const decoded = jwt.verify(token, appConfig.JWT_PRIVATE_KEY) as JwtPayload;
+
+    if (decoded?.OID !== appConfig.BUILD_SERVER_OID)
+      throw new AuthorizationError();
+  } catch (error) {
+    throw new AuthorizationError();
+  }
+
+  return next();
+}
+
+export { jwtTokenRequiredWithUserId, jwtTokenRequiredWithOID };
