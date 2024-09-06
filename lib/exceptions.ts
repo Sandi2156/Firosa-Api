@@ -30,6 +30,12 @@ class AuthorizationError extends AppError {
   }
 }
 
+class BuildServerAuthorizationError extends AppError {
+  constructor() {
+    super(errorCodes.UNAUTHORIZED, "Build Server can't be Authorized!", 401);
+  }
+}
+
 class ECSError extends AppError {
   constructor(message?: string) {
     super(
@@ -40,4 +46,10 @@ class ECSError extends AppError {
   }
 }
 
-export { AppError, ValidationError, AuthorizationError, ECSError };
+export {
+  AppError,
+  ValidationError,
+  AuthorizationError,
+  ECSError,
+  BuildServerAuthorizationError,
+};

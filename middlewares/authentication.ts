@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import { AuthorizationError } from "../lib/exceptions";
+import {
+  AuthorizationError,
+  BuildServerAuthorizationError,
+} from "../lib/exceptions";
 import appConfig from "../config/common";
 
 async function jwtTokenRequiredWithUserId(
@@ -28,16 +31,17 @@ async function jwtTokenRequiredWithOID(
   res: Response,
   next: NextFunction
 ) {
-  const token = req.cookies?.token;
-  if (!token) throw new AuthorizationError();
+  const token = req.headers["authorization"];
+
+  if (!token) throw new BuildServerAuthorizationError();
 
   try {
     const decoded = jwt.verify(token, appConfig.JWT_PRIVATE_KEY) as JwtPayload;
 
     if (decoded?.OID !== appConfig.BUILD_SERVER_OID)
-      throw new AuthorizationError();
+      throw new BuildServerAuthorizationError();
   } catch (error) {
-    throw new AuthorizationError();
+    throw new BuildServerAuthorizationError();
   }
 
   return next();
