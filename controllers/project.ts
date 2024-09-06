@@ -24,11 +24,7 @@ async function deployProject(req: Request, res: Response) {
 
   if (!gitURL) throw new ValidationError("GIT Url is required!");
 
-  const data = await projectService.deployProject(
-    gitURL,
-    existingSlug,
-    user._id
-  );
+  const data = await projectService.deployProject(gitURL, existingSlug, user);
 
   return res
     .status(201)
@@ -61,7 +57,7 @@ async function storeProject(req: Request, res: Response) {
 async function getProjects(req: Request, res: Response) {
   const { user }: GetProjectsReqBody = req.body;
 
-  const data = await projectService.getProjectsByUserId(user._id);
+  const data = await projectService.getProjectsByUserId(user);
 
   return res
     .status(201)
