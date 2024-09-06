@@ -1,13 +1,10 @@
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
 
 import userService from "../services/user";
-import {
-  AppError,
-  ValidationError,
-  AuthorizationError,
-} from "../lib/exceptions";
-import errorCodes from "../constants/error_codes";
+import { ValidationError } from "../lib/exceptions";
 import ApiResposne from "../lib/response";
+import appConfig from "../config/common";
 
 async function signUp(req: Request, res: Response) {
   const email = req.body.email?.toLowerCase();
@@ -28,13 +25,16 @@ async function signIn(req: Request, res: Response) {
   const password = req.body?.password;
 
   if (!email) throw new ValidationError("Email field is required!");
-
   if (!password) throw new ValidationError("Password field is required!");
 
-  const sessionId = await userService.signIn(email, password);
+  const userId = await userService.signIn(email, password);
+
+  const token = jwt.sign({ userId }, appConfig.JWT_PRIVATE_KEY, {
+    expiresIn: "2d",
+  });
 
   return res
-    .cookie("sessionId", sessionId, {
+    .cookie("token", token, {
       secure: true,
       httpOnly: true,
       sameSite: "none",
@@ -44,28 +44,21 @@ async function signIn(req: Request, res: Response) {
 }
 
 async function signOut(req: Request, res: Response) {
-  const sessionId = req.cookies?.sessionId;
-
-  if (!sessionId)
-    throw new AppError(errorCodes.BAD_REQUEST, "You are not logged in!", 400);
-
-  await userService.signOut(sessionId);
-
   return res
+    .cookie("token", "", {
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
+      maxAge: 0,
+    })
     .status(200)
     .json(new ApiResposne(true, "You are signed out!").toDict());
 }
 
 async function validateSession(req: Request, res: Response) {
-  const sessionId = req.cookies?.sessionId;
-
-  if (!sessionId) throw new AuthorizationError();
-
-  await userService.validateSession(sessionId);
-
   return res
     .status(200)
-    .json(new ApiResposne(true, "Session ID is validated!").toDict());
+    .json(new ApiResposne(true, "token is Validated!").toDict());
 }
 
 export default {

@@ -1,8 +1,6 @@
 import userRepository from "../repository/user";
-import sessionService from "./session";
 import bcrypt from "../lib/bcrypt";
-import { AuthorizationError, ValidationError } from "../lib/exceptions";
-import errorCodes from "../constants/error_codes";
+import { ValidationError } from "../lib/exceptions";
 
 async function signUp(
   email: string,
@@ -28,24 +26,10 @@ async function signIn(email: string, password: string) {
 
   if (!isPasswordMatched) throw new ValidationError("Password is wrong!");
 
-  const sessionId = await sessionService.createSession(user[0]._id);
-
-  return sessionId;
-}
-
-async function signOut(sessionId: string) {
-  await sessionService.removeSession(sessionId);
-}
-
-async function validateSession(sessionId: string) {
-  const sessionEntry = await sessionService.findUserForASessionId(sessionId);
-
-  if (!sessionEntry || !sessionEntry.length) throw new AuthorizationError();
+  return user[0]._id.toString();
 }
 
 export default {
   signUp,
   signIn,
-  signOut,
-  validateSession,
 };
