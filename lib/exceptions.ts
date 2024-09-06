@@ -30,4 +30,14 @@ class AuthorizationError extends AppError {
   }
 }
 
-export { AppError, ValidationError, AuthorizationError };
+class ECSError extends AppError {
+  constructor(message?: string) {
+    super(
+      errorCodes.UNKNOWN_ERROR,
+      message || "ECS Server Error. Please check again after some time!",
+      500
+    );
+  }
+}
+
+export { AppError, ValidationError, AuthorizationError, ECSError };

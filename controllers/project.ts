@@ -4,20 +4,31 @@ import projectService from "../services/project";
 import { ValidationError } from "../lib/exceptions";
 import ApiResposne from "../lib/response";
 
-type DeployProjectReqBody = { gitURL: string; existingSlug?: string };
+type DeployProjectReqBody = {
+  gitURL: string;
+  existingSlug?: string;
+  user: any;
+};
 type StoreProjectReqBody = {
   projectId: string;
   projectLink: string;
-  user: any;
+  userId: string;
   projectName: string;
+};
+type GetProjectsReqBody = {
+  user: any;
 };
 
 async function deployProject(req: Request, res: Response) {
-  const { gitURL, existingSlug }: DeployProjectReqBody = req.body;
+  const { gitURL, existingSlug, user }: DeployProjectReqBody = req.body;
 
   if (!gitURL) throw new ValidationError("GIT Url is required!");
 
-  const data = await projectService.deployProject(gitURL, existingSlug);
+  const data = await projectService.deployProject(
+    gitURL,
+    existingSlug,
+    user._id
+  );
 
   return res
     .status(201)
@@ -27,7 +38,7 @@ async function deployProject(req: Request, res: Response) {
 }
 
 async function storeProject(req: Request, res: Response) {
-  const { projectId, projectLink, projectName, user }: StoreProjectReqBody =
+  const { projectId, projectLink, projectName, userId }: StoreProjectReqBody =
     req.body;
 
   if (!projectId) throw new ValidationError("ProjectId is required!");
@@ -38,7 +49,7 @@ async function storeProject(req: Request, res: Response) {
     projectId,
     projectLink,
     projectName,
-    user._id
+    userId
   );
 
   return res
@@ -47,7 +58,7 @@ async function storeProject(req: Request, res: Response) {
 }
 
 async function getProjects(req: Request, res: Response) {
-  const { user }: StoreProjectReqBody = req.body;
+  const { user }: GetProjectsReqBody = req.body;
 
   const data = await projectService.getProjectsByUserId(user._id);
 

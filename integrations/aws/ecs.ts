@@ -1,6 +1,7 @@
 import { ECSClient, RunTaskCommand } from "@aws-sdk/client-ecs";
 
 import awsConfig from "../../config/aws";
+import { ECSError } from "../../lib/exceptions";
 
 const ecsClient = new ECSClient({
   credentials: {
@@ -10,7 +11,11 @@ const ecsClient = new ECSClient({
   region: awsConfig.REGION,
 });
 
-async function runCreateProjectCluster(gitURL: string, id: string) {
+async function runCreateProjectCluster(
+  gitURL: string,
+  id: string,
+  userId: any
+) {
   const command = new RunTaskCommand({
     cluster: awsConfig.ECS_CLUSTER,
     taskDefinition: awsConfig.ECS_TASK,
@@ -34,6 +39,7 @@ async function runCreateProjectCluster(gitURL: string, id: string) {
           environment: [
             { name: "GIT_REPO_URL", value: gitURL },
             { name: "PROJECT_ID", value: id },
+            { name: "USER_ID", value: userId },
           ],
         },
       ],
@@ -42,8 +48,8 @@ async function runCreateProjectCluster(gitURL: string, id: string) {
 
   try {
     await ecsClient.send(command);
-  } catch (error) {
-    console.log("error");
+  } catch (error: any) {
+    throw new ECSError(error.message);
   }
 }
 

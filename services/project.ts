@@ -5,11 +5,11 @@ import projectRepository from "../repository/project";
 
 async function deployProject(
   gitURL: string,
-  projectId?: string
+  projectId: string | undefined,
+  userId: any
 ): Promise<object> {
   const id: string = projectId ? projectId : generateUniqueId();
-
-  await ecsClient.runCreateProjectCluster(gitURL, id);
+  await ecsClient.runCreateProjectCluster(gitURL, id, userId);
 
   return {
     status: "queued",
