@@ -49,7 +49,7 @@ async function runCreateProjectCluster(
   try {
     await ecsClient.send(command);
   } catch (error: any) {
-    throw new ECSError(error.message);
+    throw new ECSError();
   }
 }
 
