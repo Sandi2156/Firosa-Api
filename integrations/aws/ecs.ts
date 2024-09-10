@@ -39,7 +39,7 @@ async function runCreateProjectCluster(
           environment: [
             { name: "GIT_REPO_URL", value: gitURL },
             { name: "PROJECT_ID", value: id },
-            { name: "USER_ID", value: userId.toString() },
+            { name: "USER_ID", value: userId },
           ],
         },
       ],

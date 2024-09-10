@@ -2,12 +2,14 @@ import mongodb from "../integrations/mongodb";
 import UserModel from "../models/user";
 import { AppError } from "../lib/exceptions";
 import errorCodes from "../constants/error_codes";
+import { SignedUpBy } from "../lib/types";
 
 async function signUp(
   email: string,
   password: string,
   firstName: string,
-  lastName: string
+  lastName: string,
+  signedUpBy: SignedUpBy
 ) {
   await mongodb.connect();
 
@@ -17,6 +19,7 @@ async function signUp(
       password,
       firstname: firstName,
       lastname: lastName,
+      signedupby: signedUpBy,
     });
   } catch (error: any) {
     if (error.code === 11000)
