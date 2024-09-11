@@ -1,9 +1,10 @@
 import userRepository from "../repository/user";
 import bcrypt from "../lib/bcrypt";
-import { ValidationError } from "../lib/exceptions";
+import { AppError, ValidationError } from "../lib/exceptions";
 import { SignedUpBy as SignedUpByType } from "../lib/types";
 import { v4 as uuidv4 } from "uuid";
 import { SignedUpBy } from "../constants/common";
+import errorCodes from "../constants/error_codes";
 
 async function signUp(
   email: string,
@@ -25,6 +26,18 @@ async function signUp(
   );
 }
 
+function getSignInMethodErrorMessage(signedUpBy: string): string {
+  switch (signedUpBy) {
+    case SignedUpBy.SELF:
+      return "Please Sign In using Email-Password!";
+    case SignedUpBy.GOOGLE:
+      return "Please Sign In using Google!";
+    default:
+      console.log(`SignedUpBy value is not found - ${signedUpBy}`);
+      return "";
+  }
+}
+
 async function signIn(
   email: string,
   password: string,
@@ -34,6 +47,13 @@ async function signIn(
 
   if (!user || (user && !user.length))
     throw new ValidationError("User not found!");
+
+  if (user[0].signedupby !== signedUpBy)
+    throw new AppError(
+      errorCodes.BAD_REQUEST,
+      getSignInMethodErrorMessage(user[0].signedupby),
+      400
+    );
 
   if (signedUpBy == SignedUpBy.SELF) {
     const isPasswordMatched = await bcrypt.comparePassword(
