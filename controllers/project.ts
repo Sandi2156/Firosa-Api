@@ -9,14 +9,21 @@ type DeployProjectReqBody = {
   existingSlug?: string;
   user: any;
 };
+
 type StoreProjectReqBody = {
   projectId: string;
   projectLink: string;
   userId: string;
   projectName: string;
 };
+
 type GetProjectsReqBody = {
   user: any;
+};
+
+type DeleteProjectReqBody = {
+  user: string;
+  projectId: string;
 };
 
 async function deployProject(req: Request, res: Response) {
@@ -64,4 +71,16 @@ async function getProjects(req: Request, res: Response) {
     .json(new ApiResposne(true, "Data is fetched!", data).toDict());
 }
 
-export default { deployProject, storeProject, getProjects };
+async function deleteProject(req: Request, res: Response) {
+  const { user, projectId }: DeleteProjectReqBody = req.body;
+
+  await projectService.deleteProject(projectId, user);
+
+  return res
+    .status(201)
+    .json(
+      new ApiResposne(true, `Project with id:${projectId} is deleted!`).toDict()
+    );
+}
+
+export default { deployProject, storeProject, getProjects, deleteProject };

@@ -35,4 +35,13 @@ async function getProjectsByUserId(userId: string) {
   return await projectRepository.getProjectsByUserId(userId);
 }
 
-export default { deployProject, storeProject, getProjectsByUserId };
+async function deleteProject(projectId: string, userId: string) {
+  await projectRepository.deleteProject(projectId, userId);
+}
+
+export default {
+  deployProject,
+  storeProject,
+  getProjectsByUserId,
+  deleteProject,
+};

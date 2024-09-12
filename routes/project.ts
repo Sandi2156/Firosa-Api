@@ -24,6 +24,11 @@ projectRouter
     "/",
     tryCatch(jwtTokenRequiredWithUserId),
     tryCatch(projectController.getProjects)
+  )
+  .post(
+    "/delete",
+    tryCatch(jwtTokenRequiredWithUserId),
+    tryCatch(projectController.deleteProject)
   );
 
 export default projectRouter;
